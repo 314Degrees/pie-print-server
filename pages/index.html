@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Print Server v1.0</title>
+</head>
+<body>
+    <h3>Pie Print Server v1.0 - Basic API Usage</h3>
+    <ul>
+        <li>
+            <strong>[GET]</strong> &bull; /
+            <br/>
+            <ul>
+                <li>
+                    Halaman ini.
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[GET]</strong> &bull; /printer-list
+            <br/>
+            <ul>
+                <li>
+                    Mendapatkan list printer yang tersedia.
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[GET]</strong> &bull; /printer-default
+            <br/>
+            <ul>
+                <li>
+                    Mendapatkan printer default.
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[POST]</strong> &bull; /print-url
+            <br/>
+            <ul>
+                <li>
+                    Cetak menggunakan URL PDF.
+                </li>
+                <li>
+                    Body : <strong>text/json</strong>
+                </li>
+                <li>
+<pre>
+{
+    url: "http://..." <strong>[required]</strong>
+    options: { <strong>[optional]</strong>
+        <i>(pdf-to-printer options)</i>
+    }
+}
+</pre>
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            refer to <a href="https://github.com/artiebits/pdf-to-printer">pdf-to-printer</a> project repository for more information.
+        </li>
+    </ul>
+    <br/>
+
+    &copy;2023 &bull; Pie - RSUD Bendan Kota Pekalongan
+</body>
+</html>
