@@ -6,6 +6,7 @@ import needle from "needle";
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { fileURLToPath } from "url";
+import 'dotenv/config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -107,6 +108,7 @@ app.get('/printer-list', (req, res) => {
         })
         .catch((rejected) => {
             console.log('reject');
+            console.log(rejected);
         });
 });
 
@@ -120,6 +122,7 @@ app.get('/printer-default', (req, res) => {
         })
         .catch((rejected) => {
             console.log('reject');
+            console.log(rejected);
         });
 });
 
@@ -234,6 +237,97 @@ app.post('/print-antrean', async (req, res) => {
                         data: rejected
                     });
                 });
+
+            fs.unlinkSync(tmpFilePath);
+            
+        } else {
+            throw {
+                message: 'invalid file.',
+            };
+        }
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+});
+
+app.get('/env', (req, res) => {
+   console.log(process.env);
+   res.json({ message: 'OK.', env: process.env });
+});
+
+app.post('/print-url-env', async (req, res) => {
+    try {
+        let options = null;
+
+        if (req.body.options) {
+            options = req.body.options;
+        }
+
+        if (process.env.PREFERRED_PRINTER) {
+            if (options) {
+                if (!options.printer) {
+                    options.printer = process.env.PREFERRED_PRINTER;
+                }
+            } else {
+                options = {
+                    printer: process.env.PREFERRED_PRINTER
+                }
+            }
+        }
+
+        if (!req.body.url) {
+            res.status(500).json({
+                success: false,
+                message: 'URL not specified.'
+            });
+            return;
+        }
+
+        const apiRes = await needle('get', req.body.url);
+
+        const bodyBuffer = apiRes.body;
+
+        const uint = new Uint8Array(bodyBuffer);
+        let bodyBytes = [];
+        uint.forEach(byte => {
+            bodyBytes.push(byte.toString(16));
+        });
+        const bodyHex = bodyBytes.join('').toUpperCase();
+
+        if (bodyHex.startsWith('255044462D')) {
+            const tmpFilePath = path.join(`tmp/${Math.random().toString(36).substring(7)}.pdf`);
+
+            fs.writeFileSync(tmpFilePath, apiRes.body, 'binary');
+            
+            if (options) {
+                await ptp.print(tmpFilePath, options)
+                    .then((resolved) => {
+                        res.json({
+                            success: true,
+                            data: resolved
+                        });
+                    })
+                    .catch((rejected) => {
+                        res.json({
+                            success: false,
+                            data: rejected
+                        });
+                    });
+                } else {
+                    await ptp.print(tmpFilePath)
+                        .then((resolved) => {
+                            res.json({
+                                success: true,
+                                data: resolved
+                            });
+                        })
+                        .catch((rejected) => {
+                            res.json({
+                                success: false,
+                                data: rejected
+                            });
+                        });
+                }
 
             fs.unlinkSync(tmpFilePath);
             

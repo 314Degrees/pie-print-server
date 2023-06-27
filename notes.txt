@@ -1,0 +1,17 @@
+untuk setting on start up
+
+> npm i qckwinsvc -g
+
+
+
+MAKE SURE TO RUN THESE COMMANDS BELOW IN PROJECT DIRECTORY
+
+Add service
+
+> qckwinsvc --name "pie-print-server" --description "PIE Print Server" --script "C:\Apps\pie-print-server-2\index.js" --startImmediately
+
+
+
+Remove service
+
+> qckwinsvc --uninstall --name "pie-print-server" --script "C:\Apps\pie-print-server-2\index.js"
