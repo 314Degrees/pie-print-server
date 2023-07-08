@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pie Print Server v1.0</title>
+    <title>Pie Print Server v1.6.1</title>
 </head>
 <body>
-    <h3>Pie Print Server v1.0 - Basic API Usage</h3>
+    <h3>Pie Print Server v1.6.1 - Basic API Usage</h3>
     <ul>
         <li>
             <strong>[GET]</strong> &bull; /
@@ -61,6 +61,63 @@
     }
 }
 </pre>
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[POST]</strong> &bull; /print-url-env
+            <br/>
+            <ul>
+                <li>
+                    Cetak menggunakan URL PDF dengan konfigurasi .env file.
+                </li>
+                <li>
+                    Body : <strong>text/json</strong>
+                </li>
+                <li>
+<pre>
+{
+    url: "http://..." <strong>[required]</strong>
+    options: { <strong>[optional]</strong>
+        <i>(pdf-to-printer options)</i>
+    }
+}
+</pre>
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[GET]</strong> &bull; /env
+            <br/>
+            <ul>
+                <li>
+                    Cek konfigurasi .env file.
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[GET]</strong> &bull; /test-print
+            <br/>
+            <ul>
+                <li>
+                    Test print dengan printer default.
+                </li>
+            </ul>
+        </li>
+        <br/>
+
+        <li>
+            <strong>[GET]</strong> &bull; /test-print-env
+            <br/>
+            <ul>
+                <li>
+                    Test print dengan konfigurasi .env file.
                 </li>
             </ul>
         </li>

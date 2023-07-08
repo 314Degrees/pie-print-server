@@ -1,12 +1,15 @@
 {
   "name": "pie-print-server",
-  "version": "1.0.0",
+  "version": "1.6.1",
   "description": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ."
+    "start": "node .",
+    "restart-service": "qckwinsvc --name 'pie-print-server' --description 'PIE Print Server' --script 'index.js' --startImmediately && qckwinsvc --uninstall --name 'pie-print-server' --script 'index.js'",
+    "add-service": "qckwinsvc --name 'pie-print-server' --description 'PIE Print Server' --script 'index.js' --startImmediately",
+    "remove-service": "qckwinsvc --uninstall --name 'pie-print-server' --script 'index.js'"
   },
   "author": "",
   "license": "ISC",

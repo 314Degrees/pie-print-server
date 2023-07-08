@@ -8,10 +8,13 @@ MAKE SURE TO RUN THESE COMMANDS BELOW IN PROJECT DIRECTORY
 
 Add service
 
+> npm run add-service
+OR
 > qckwinsvc --name "pie-print-server" --description "PIE Print Server" --script "C:\Apps\pie-print-server-2\index.js" --startImmediately
 
 
 
 Remove service
-
+> npm run remove-service
+OR
 > qckwinsvc --uninstall --name "pie-print-server" --script "C:\Apps\pie-print-server-2\index.js"

@@ -24,73 +24,59 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/pages/index.html'));
 });
 
-app.get('/x-sample-print', (req, res) => {
-    const options = {
-        // printer: "HP Laser MFP 131 133 135-138 [DESKTOP-6AO0OMC](Mobility)",
-        printer: "Microsoft Print to PDF",
-        scale: "fit",
-    };
-      
-    ptp.print("assets/ECHO.pdf", options)
-        .then((resolved) => {
-            res.json({
-                success: true,
-                data: resolved
+app.get('/test-print', async (req, res) => {
+    try {
+        ptp.print("assets/sample.pdf")
+            .then((resolved) => {
+                res.json({
+                    success: true,
+                    data: resolved
+                });
+            })
+            .catch((rejected) => {
+                res.json({
+                    success: false,
+                    data: rejected
+                });
             });
-        })
-        .catch((rejected) => {
-            res.json({
-                success: false,
-                data: rejected
-            });
-        });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 });
 
-app.get('/x-sample-print-url', async (req, res) => {
+app.get('/test-print-env', async (req, res) => {
     try {
-        const options = {
-            // printer: "HP Laser MFP 131 133 135-138 [DESKTOP-6AO0OMC](Mobility)",
-            printer: "BP-LITE 80L",
-            scale: "fit",
-        };
+        let options = null;
 
-        const apiRes = await needle('get', `http://192.168.101.8/api-simrs/public/Farmasi/Farmasi/CetakAntreanFarmasiBySerialantre/AFP230524FA01A006`);
-
-        const bodyBuffer = apiRes.body;
-
-        const uint = new Uint8Array(bodyBuffer);
-        let bodyBytes = [];
-        uint.forEach(byte => {
-            bodyBytes.push(byte.toString(16));
-        });
-        const bodyHex = bodyBytes.join('').toUpperCase();
-
-        if (bodyHex.startsWith('255044462D')) {
-            const tmpFilePath = path.join(`tmp/${Math.random().toString(36).substring(7)}.pdf`);
-
-            fs.writeFileSync(tmpFilePath, apiRes.body, 'binary');
-            
-            await ptp.print(tmpFilePath, options)
-                .then((resolved) => {
-                    res.json({
-                        success: true,
-                        data: resolved
-                    });
-                })
-                .catch((rejected) => {
-                    res.json({
-                        success: false,
-                        data: rejected
-                    });
-                });
-
-            fs.unlinkSync(tmpFilePath);
-            
-        } else {
-            throw {
-                message: 'invalid file.',
-            };
+        if (req.body.options) {
+            options = req.body.options;
         }
+
+        if (process.env.PREFERRED_PRINTER) {
+            if (options) {
+                if (!options.printer) {
+                    options.printer = process.env.PREFERRED_PRINTER;
+                }
+            } else {
+                options = {
+                    printer: process.env.PREFERRED_PRINTER
+                }
+            }
+        }
+
+        ptp.print("assets/sample.pdf", options)
+            .then((resolved) => {
+                res.json({
+                    success: true,
+                    data: resolved
+                });
+            })
+            .catch((rejected) => {
+                res.json({
+                    success: false,
+                    data: rejected
+                });
+            });
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -252,7 +238,7 @@ app.post('/print-antrean', async (req, res) => {
 
 app.get('/env', (req, res) => {
    console.log(process.env);
-   res.json({ message: 'OK.', env: process.env });
+   res.json({ message: 'OK.', PREFERRED_PRINTER: process.env.PREFERRED_PRINTER });
 });
 
 app.post('/print-url-env', async (req, res) => {
